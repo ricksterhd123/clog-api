@@ -1,4 +1,3 @@
 Compress-Archive -Path blog-api/* -DestinationPath terraform/blog-api.zip
-Set-Location .\terraform
-terraform init
-terraform apply
+terraform -chdir=terraform/ init
+terraform -chdir=terraform/ apply -auto-approve
