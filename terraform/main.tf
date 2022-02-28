@@ -6,6 +6,11 @@ terraform {
         }
     }
 
+    backend "s3" {
+        bucket = "dzwcq2zr7yfy4mhz"
+        key = "terraform-state/blog-api"
+        region = "eu-west-2"
+    }
     required_version = ">= 1.1.0"
 }
 
