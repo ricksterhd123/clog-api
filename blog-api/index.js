@@ -1,6 +1,10 @@
 async function get(event, context) {
     return {
-        event, context
+        statusCode: 200,
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify({event, context})
     };
 }
 
