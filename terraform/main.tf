@@ -19,6 +19,20 @@ provider "aws" {
     region = "eu-west-2"
 }
 
+resource "aws_cognito_user_pool" "pool" {
+  name = "example_user_pool"
+}
+
+resource "aws_cognito_user_pool_client" "client" {
+  name = "example_external_api"
+  user_pool_id = aws_cognito_user_pool.pool.id
+  explicit_auth_flows = [
+    "ALLOW_USER_PASSWORD_AUTH",
+    "ALLOW_USER_SRP_AUTH",
+    "ALLOW_REFRESH_TOKEN_AUTH"
+  ]
+}
+
 resource "aws_iam_role" "blog_api_role" {
     name = "blog-api-role"
 
@@ -50,4 +64,37 @@ resource "aws_lambda_function" "blog_api" {
             foo = "bar"
         }
     }
+}
+
+resource "aws_apigatewayv2_api" "gateway" {
+  name = "example_api"
+  protocol_type = "HTTP"
+}
+
+resource "aws_apigatewayv2_authorizer" "auth" {
+  api_id           = aws_apigatewayv2_api.gateway.id
+  authorizer_type  = "JWT"
+  identity_sources = ["$request.header.Authorization"]
+  name             = "cognito-authorizer"
+
+  jwt_configuration {
+    audience = [aws_cognito_user_pool_client.client.id]
+    issuer   = "https://${aws_cognito_user_pool.pool.endpoint}"
+  }
+}
+
+resource "aws_apigatewayv2_integration" "int" {
+  api_id           = aws_apigatewayv2_api.gateway.id
+  integration_type = "AWS_PROXY"
+  connection_type = "INTERNET"
+  integration_method = "POST"
+  integration_uri = aws_lambda_function.blog_api.invoke_arn
+}
+
+resource "aws_apigatewayv2_route" "route" {
+  api_id    = aws_apigatewayv2_api.gateway.id
+  route_key = "GET /"
+  target = "integrations/${aws_apigatewayv2_integration.int.id}"
+  authorization_type = "JWT"
+  authorizer_id = aws_apigatewayv2_authorizer.auth.id
 }
