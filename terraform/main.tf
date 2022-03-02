@@ -23,13 +23,33 @@ resource "aws_cognito_user_pool" "pool" {
   name = "example_user_pool"
 }
 
+resource "aws_cognito_user_pool_domain" "main" {
+  domain       = "blog-api"
+  user_pool_id = aws_cognito_user_pool.pool.id
+}
+
 resource "aws_cognito_user_pool_client" "client" {
   name = "example_external_api"
   user_pool_id = aws_cognito_user_pool.pool.id
+  allowed_oauth_flows_user_pool_client = true
+  allowed_oauth_flows = [
+    "code"
+  ]
+  allowed_oauth_scopes = [
+    "email",
+    "openid"
+  ]
   explicit_auth_flows = [
     "ALLOW_USER_PASSWORD_AUTH",
-    "ALLOW_USER_SRP_AUTH",
     "ALLOW_REFRESH_TOKEN_AUTH"
+  ]
+  generate_secret = true
+  callback_urls = [
+    "https://localhost:8080"
+  ]
+  default_redirect_uri = "https://localhost:8080"
+  supported_identity_providers = [
+    "COGNITO"
   ]
 }
 
@@ -89,6 +109,7 @@ resource "aws_apigatewayv2_integration" "int" {
   connection_type = "INTERNET"
   integration_method = "POST"
   integration_uri = aws_lambda_function.blog_api.invoke_arn
+  payload_format_version = "2.0"
 }
 
 resource "aws_apigatewayv2_route" "route" {
@@ -97,4 +118,18 @@ resource "aws_apigatewayv2_route" "route" {
   target = "integrations/${aws_apigatewayv2_integration.int.id}"
   authorization_type = "JWT"
   authorizer_id = aws_apigatewayv2_authorizer.auth.id
+}
+
+resource "aws_apigatewayv2_stage" "stage" {
+  api_id = aws_apigatewayv2_api.gateway.id
+  name = "dev-api"
+  auto_deploy = true
+}
+
+resource "aws_apigatewayv2_deployment" "deployment" {
+  api_id = aws_apigatewayv2_api.gateway.id
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
