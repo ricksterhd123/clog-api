@@ -19,10 +19,15 @@ provider "aws" {
     region = "eu-west-2"
 }
 
+#
+# AWS Cognito
+#
+
 resource "aws_cognito_user_pool" "pool" {
   name = "example_user_pool"
 }
 
+# Creates a URL that users can authorize and get tokens
 resource "aws_cognito_user_pool_domain" "main" {
   domain       = "blog-api"
   user_pool_id = aws_cognito_user_pool.pool.id
@@ -53,6 +58,11 @@ resource "aws_cognito_user_pool_client" "client" {
   ]
 }
 
+#
+# Lambda functions
+#
+
+# Lambda function role
 resource "aws_iam_role" "blog_api_role" {
     name = "blog-api-role"
 
@@ -70,6 +80,7 @@ resource "aws_iam_role" "blog_api_role" {
     })
 }
 
+# API lambda function
 resource "aws_lambda_function" "blog_api" {
     filename = "blog-api.zip"
     function_name = "blog-api"
@@ -85,6 +96,10 @@ resource "aws_lambda_function" "blog_api" {
         }
     }
 }
+
+#
+# API gateway v2
+#
 
 resource "aws_apigatewayv2_api" "gateway" {
   name = "example_api"
@@ -103,6 +118,8 @@ resource "aws_apigatewayv2_authorizer" "auth" {
   }
 }
 
+# Link the API with a lambda function
+# TODO: Why is the event not linking properly? Permissions?
 resource "aws_apigatewayv2_integration" "int" {
   api_id           = aws_apigatewayv2_api.gateway.id
   integration_type = "AWS_PROXY"
@@ -128,8 +145,19 @@ resource "aws_apigatewayv2_stage" "stage" {
 
 resource "aws_apigatewayv2_deployment" "deployment" {
   api_id = aws_apigatewayv2_api.gateway.id
+  depends_on = [
+    aws_apigatewayv2_route.route
+  ]
+}
 
-  lifecycle {
-    create_before_destroy = true
-  }
+resource "aws_lambda_permission" "api-gateway" {
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.blog_api.function_name
+  principal = "apigateway.amazonaws.com"
+  source_arn = aws_apigatewayv2_api.gateway.execution_arn
+  depends_on = [
+    aws_lambda_function.blog_api,
+    aws_apigatewayv2_api.gateway,
+    aws_apigatewayv2_integration.int
+  ]
 }
