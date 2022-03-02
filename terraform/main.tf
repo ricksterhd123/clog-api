@@ -131,7 +131,7 @@ resource "aws_apigatewayv2_integration" "int" {
 
 resource "aws_apigatewayv2_route" "route" {
   api_id    = aws_apigatewayv2_api.gateway.id
-  route_key = "GET /"
+  route_key = "$default"
   target = "integrations/${aws_apigatewayv2_integration.int.id}"
   authorization_type = "JWT"
   authorizer_id = aws_apigatewayv2_authorizer.auth.id
@@ -154,7 +154,7 @@ resource "aws_lambda_permission" "api-gateway" {
   action = "lambda:InvokeFunction"
   function_name = aws_lambda_function.blog_api.function_name
   principal = "apigateway.amazonaws.com"
-  source_arn = "${aws_apigatewayv2_api.gateway.execution_arn}/*/*/"
+  source_arn = "${aws_apigatewayv2_api.gateway.execution_arn}/*/$default"
   depends_on = [
     aws_lambda_function.blog_api,
     aws_apigatewayv2_api.gateway,
