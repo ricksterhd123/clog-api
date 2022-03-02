@@ -24,7 +24,7 @@ provider "aws" {
 #
 
 resource "aws_cognito_user_pool" "pool" {
-  name = "example_user_pool"
+  name = "blog-api"
 }
 
 # Creates a URL that users can authorize and get tokens
@@ -34,7 +34,7 @@ resource "aws_cognito_user_pool_domain" "main" {
 }
 
 resource "aws_cognito_user_pool_client" "client" {
-  name = "example_external_api"
+  name = "blog-api-client"
   user_pool_id = aws_cognito_user_pool.pool.id
   allowed_oauth_flows_user_pool_client = true
   allowed_oauth_flows = [
@@ -85,7 +85,7 @@ resource "aws_lambda_function" "blog_api" {
     filename = "blog-api.zip"
     function_name = "blog-api"
     role = aws_iam_role.blog_api_role.arn
-    handler = "index.get"
+    handler = "index.handler"
 
     source_code_hash = filebase64sha256("blog-api.zip")
     runtime = "nodejs14.x"
@@ -109,7 +109,7 @@ resource "aws_lambda_permission" "api-gateway" {
 #
 
 resource "aws_apigatewayv2_api" "gateway" {
-  name = "example_api"
+  name = "blog-api-gateway"
   protocol_type = "HTTP"
 }
 
@@ -145,7 +145,7 @@ resource "aws_apigatewayv2_route" "route" {
 
 resource "aws_apigatewayv2_stage" "stage" {
   api_id = aws_apigatewayv2_api.gateway.id
-  name = "dev-api"
+  name = "dev"
   auto_deploy = true
 }
 

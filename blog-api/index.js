@@ -1,4 +1,4 @@
-async function get(event, context) {
+async function handler(event, context) {
     return {
         statusCode: 200,
         headers: {
@@ -9,5 +9,5 @@ async function get(event, context) {
 }
 
 module.exports = {
-    get
+    handler
 };
