@@ -102,11 +102,6 @@ resource "aws_lambda_permission" "api-gateway" {
   function_name = aws_lambda_function.blog_api.function_name
   principal = "apigateway.amazonaws.com"
   source_arn = "${aws_apigatewayv2_api.gateway.execution_arn}/*/$default"
-  depends_on = [
-    aws_lambda_function.blog_api,
-    aws_apigatewayv2_api.gateway,
-    aws_apigatewayv2_integration.int
-  ]
 }
 
 #
@@ -131,7 +126,6 @@ resource "aws_apigatewayv2_authorizer" "auth" {
 }
 
 # Link the API with a lambda function
-# TODO: Why is the event not linking properly? Permissions?
 resource "aws_apigatewayv2_integration" "int" {
   api_id           = aws_apigatewayv2_api.gateway.id
   integration_type = "AWS_PROXY"
