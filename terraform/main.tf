@@ -97,6 +97,18 @@ resource "aws_lambda_function" "blog_api" {
     }
 }
 
+resource "aws_lambda_permission" "api-gateway" {
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.blog_api.function_name
+  principal = "apigateway.amazonaws.com"
+  source_arn = "${aws_apigatewayv2_api.gateway.execution_arn}/*/$default"
+  depends_on = [
+    aws_lambda_function.blog_api,
+    aws_apigatewayv2_api.gateway,
+    aws_apigatewayv2_integration.int
+  ]
+}
+
 #
 # API gateway v2
 #
@@ -147,17 +159,5 @@ resource "aws_apigatewayv2_deployment" "deployment" {
   api_id = aws_apigatewayv2_api.gateway.id
   depends_on = [
     aws_apigatewayv2_route.route
-  ]
-}
-
-resource "aws_lambda_permission" "api-gateway" {
-  action = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.blog_api.function_name
-  principal = "apigateway.amazonaws.com"
-  source_arn = "${aws_apigatewayv2_api.gateway.execution_arn}/*/$default"
-  depends_on = [
-    aws_lambda_function.blog_api,
-    aws_apigatewayv2_api.gateway,
-    aws_apigatewayv2_integration.int
   ]
 }
