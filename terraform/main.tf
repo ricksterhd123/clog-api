@@ -154,7 +154,7 @@ resource "aws_lambda_permission" "api-gateway" {
   action = "lambda:InvokeFunction"
   function_name = aws_lambda_function.blog_api.function_name
   principal = "apigateway.amazonaws.com"
-  source_arn = aws_apigatewayv2_api.gateway.execution_arn
+  source_arn = "${aws_apigatewayv2_api.gateway.execution_arn}/*/*/"
   depends_on = [
     aws_lambda_function.blog_api,
     aws_apigatewayv2_api.gateway,
