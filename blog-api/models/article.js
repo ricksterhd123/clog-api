@@ -10,11 +10,16 @@ async function create(author, title, body, tags) {
 
     const { hashKey: id, sortKey: type } = dynamoDb.config;
 
+    const timeCreated = new Date().toISOString();
+    const timeUpdated = timeCreated;
+
     const Item = {
         author,
         title,
         body,
         tags,
+        timeCreated,
+        timeUpdated,
     };
 
     Item[id] = v4();
