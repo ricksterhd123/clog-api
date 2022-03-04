@@ -36,8 +36,10 @@ function getPathRoot(stage, routeKey) {
  */
 async function dispatchEvent(event) {
     try {
+        console.log(event);
+
         const {
-            routeKey,
+            rawPath,
             rawQueryString,
             requestContext: {
             // authorizer: {
@@ -50,10 +52,10 @@ async function dispatchEvent(event) {
             },
         } = event;
 
-        const route = getPathRoot(stage, routeKey);
+        const route = getPathRoot(stage, rawPath);
         const handlerFn = stage && Paths[route][method.toUpperCase()];
 
-        if (!(routeKey && rawQueryString && handlerFn)) {
+        if (!(rawPath && rawQueryString && handlerFn)) {
             return {
                 statusCode: 404,
                 headers: {
