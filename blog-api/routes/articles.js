@@ -1,5 +1,6 @@
 const { getResponse } = require('../utils');
 const { Article } = require('../models');
+const { validateArticle } = require('./schemas');
 
 async function create(event) {
     let { body: eventBody } = event;
@@ -8,6 +9,10 @@ async function create(event) {
         eventBody = JSON.parse(eventBody);
     } catch (error) {
         return getResponse(400, { error: 'Invalid JSON' });
+    }
+
+    if (!validateArticle(eventBody)) {
+        return getResponse(400, { error: validateArticle.errors });
     }
 
     const {
@@ -29,8 +34,10 @@ async function create(event) {
 
 // async function read(event) {
 // }
+
 // async function update(event) {
 // }
+
 // async function destroy(event) {
 // }
 
