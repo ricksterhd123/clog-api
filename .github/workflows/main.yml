@@ -28,7 +28,8 @@ jobs:
           AWS_DEFAULT_REGION: eu-west-2
       - run: npm install
         working-directory: ./blog-api
-      - run: zip -r ./terraform/blog-api.zip ./blog-api/*
+      - run: zip -r ../terraform/blog-api.zip *
+        working-directory: ./blog-api
       - run: terraform apply -auto-approve
         working-directory: ./terraform
         env:
