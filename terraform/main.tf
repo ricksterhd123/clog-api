@@ -88,6 +88,41 @@ resource "aws_dynamodb_table" "blog_api_db" {
 # Lambda functions
 #
 
+resource "aws_iam_policy" "dynamodb_policy" {
+  name = "${var.project_name}-dynamodb-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "dynamodb:PutItem"
+        Effect = "Allow"
+        Resource = aws_dynamodb_table.blog_api_db.arn
+      },
+      {
+        Action = "dynamodb:Query"
+        Effect = "Allow"
+        Resource = aws_dynamodb_table.blog_api_db.arn
+      },
+      {
+        Action = "dynamodb:UpdateItem"
+        Effect = "Allow"
+        Resource = aws_dynamodb_table.blog_api_db.arn
+      },
+      {
+        Action = "dynamodb:GetItem"
+        Effect = "Allow"
+        Resource = aws_dynamodb_table.blog_api_db.arn
+      },
+      {
+        Action = "dynamodb:DeleteItem"
+        Effect = "Allow"
+        Resource = aws_dynamodb_table.blog_api_db.arn
+      }
+    ]
+  })
+}
+
 # Lambda function role
 resource "aws_iam_role" "blog_api_role" {
   name = "${var.project_name}-role"
@@ -101,52 +136,13 @@ resource "aws_iam_role" "blog_api_role" {
         Principal = {
           Service = "lambda.amazonaws.com"
         }
-      },
-      {
-        Action = "dynamodb:PutItem"
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Resource = aws_dynamodb_table.blog_api_db.arn
-      },
-      {
-        Action = "dynamodb:Query"
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Resource = aws_dynamodb_table.blog_api_db.arn
-      },
-      {
-        Action = "dynamodb:UpdateItem"
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Resource = aws_dynamodb_table.blog_api_db.arn
-      },
-      {
-        Action = "dynamodb:GetItem"
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Resource = aws_dynamodb_table.blog_api_db.arn
-      },
-      {
-        Action = "dynamodb:DeleteItem"
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Resource = aws_dynamodb_table.blog_api_db.arn
       }
     ]
   })
 
   managed_policy_arns = [
-    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+    "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+    aws_iam_policy.dynamodb_policy.arn
   ]
 }
 
@@ -162,10 +158,10 @@ resource "aws_lambda_function" "blog_api" {
 
   environment {
     variables = {
-      BLOG_API_DYNAMODB_TABLE_NAME = var.dynamodb_table_name
+      BLOG_API_DYNAMODB_TABLE_NAME    = var.dynamodb_table_name
       BLOG_API_DYNAMODB_HASH_KEY_NAME = var.dynamodb_hash_key_name
       BLOG_API_DYNAMODB_SORT_KEY_NAME = var.dynamodb_sort_key_name
-      REGION                       = var.region
+      REGION                          = var.region
     }
   }
 }
