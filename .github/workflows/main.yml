@@ -2,6 +2,6 @@ name: Main workflow
 on: [push]
 jobs:
   Lint:
-    runs-on: node:14
+    runs-on: node:latest
     steps:
       - run: cd ./blog-api && npm install && npx eslint .
