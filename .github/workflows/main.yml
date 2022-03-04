@@ -5,4 +5,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: npm install && npx eslint .
-        working-directory: ./blog-api
+        working-directory: blog-api
