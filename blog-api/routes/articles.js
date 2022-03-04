@@ -21,10 +21,10 @@ async function create(event) {
     console.log(result);
 
     if (result) {
-        return getResponse(204, body);
+        return getResponse(204);
     }
 
-    return getResponse(400, '');
+    return getResponse(400, 'Missing fields in JSON');
 }
 
 // async function read(event) {
