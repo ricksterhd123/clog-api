@@ -163,7 +163,8 @@ resource "aws_lambda_function" "blog_api" {
   environment {
     variables = {
       BLOG_API_DYNAMODB_TABLE_NAME = var.dynamodb_table_name
-      BLOG_API_dynamodb_hash_key_name = var.dynamodb_hash_key_name
+      BLOG_API_DYNAMODB_HASH_KEY_NAME = var.dynamodb_hash_key_name
+      BLOG_API_DYNAMODB_SORT_KEY_NAME = var.dynamodb_sort_key_name
       REGION                       = var.region
     }
   }
