@@ -1,0 +1,7 @@
+name: Main workflow
+on: [push]
+jobs:
+  Lint:
+    runs-on: node:14-alpine
+    steps:
+      - run: cd ./blog-api && npm install && npx eslint .
