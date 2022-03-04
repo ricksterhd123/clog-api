@@ -1,4 +1,5 @@
 const Articles = require('./routes/articles');
+const { getResponse } = require('./utils');
 
 /**
  * Assign API paths here
@@ -20,6 +21,10 @@ const Paths = {
  * @returns {string} Path root
  */
 function getPathRoot(stage, routeKey) {
+    if (!(stage && routeKey)) {
+        return false;
+    }
+
     const pathRegex = new RegExp(`\\/${stage}\\/((\\w*-*)+)`);
     const [, route] = routeKey.match(pathRegex);
     return route;
@@ -41,9 +46,6 @@ async function dispatchEvent(event) {
         const {
             rawPath,
             requestContext: {
-            // authorizer: {
-            //     jwt,
-            // },
                 http: {
                     method,
                 },
@@ -52,29 +54,16 @@ async function dispatchEvent(event) {
         } = event;
 
         const route = getPathRoot(stage, rawPath);
-        const handlerFn = stage && Paths[route][method.toUpperCase()];
+        const handlerFn = route && Paths[route][method.toUpperCase()];
 
         if (!(rawPath && handlerFn)) {
-            return {
-                statusCode: 404,
-                headers: {
-                    'content-type': 'application/json',
-                },
-                body: JSON.stringify({ error: 'Resource not found' }),
-            };
+            return getResponse(404, { error: 'Resource not found' });
         }
 
         return handlerFn(event);
     } catch (error) {
         console.error(error);
-
-        return {
-            statusCode: 500,
-            headers: {
-                'content-type': 'application/json',
-            },
-            body: JSON.stringify({ error: 'Server error' }),
-        };
+        return getResponse(500, { error: 'Server error' });
     }
 }
 
