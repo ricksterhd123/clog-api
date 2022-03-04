@@ -12,6 +12,7 @@ jobs:
           npm install
           npx eslint .
   Build:
+    needs: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
