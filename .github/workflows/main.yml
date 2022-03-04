@@ -5,6 +5,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run eslint
+        uses: actions/checkout@v2
         working-directory: ./blog-api
         run: |
           npm install
