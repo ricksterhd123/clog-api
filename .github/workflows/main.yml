@@ -4,5 +4,6 @@ jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
+      - run: ls
       - run: npm install && npx eslint .
         working-directory: ../blog-api
