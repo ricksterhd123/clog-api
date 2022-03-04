@@ -4,4 +4,4 @@ jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
-      - run: cd ../../blog-api && npm install && npx eslint .
+      - run: cd blog-api/ && npm install && npx eslint .
