@@ -2,7 +2,7 @@ const Articles = require('./routes/articles');
 const { getResponse } = require('./utils');
 
 /**
- * Assign API paths here
+ * Map endpoint and method with event handler
  */
 const Paths = {
     articles: {
