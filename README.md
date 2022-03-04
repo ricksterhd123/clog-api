@@ -1,4 +1,4 @@
-# C(loud-based b)log API
+# C(loud-based b)log API [![Main workflow](https://github.com/ricksterhd123/clog-api/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/ricksterhd123/clog-api/actions/workflows/main.yml)
 ## An API for my blog using AWS
 
 ## Goals
