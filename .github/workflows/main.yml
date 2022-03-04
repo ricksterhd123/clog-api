@@ -4,8 +4,9 @@ jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
       - name: Run eslint
-        uses: actions/checkout@v2
         working-directory: ./blog-api
         run: |
           npm install
