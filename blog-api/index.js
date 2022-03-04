@@ -40,7 +40,6 @@ async function dispatchEvent(event) {
 
         const {
             rawPath,
-            rawQueryString,
             requestContext: {
             // authorizer: {
             //     jwt,
@@ -55,7 +54,7 @@ async function dispatchEvent(event) {
         const route = getPathRoot(stage, rawPath);
         const handlerFn = stage && Paths[route][method.toUpperCase()];
 
-        if (!(rawPath && rawQueryString && handlerFn)) {
+        if (!(rawPath && handlerFn)) {
             return {
                 statusCode: 404,
                 headers: {
