@@ -151,7 +151,7 @@ resource "aws_lambda_function" "blog_api" {
   filename      = "${var.project_name}.zip"
   function_name = "${var.project_name}-lambda"
   role          = aws_iam_role.blog_api_role.arn
-  handler       = "index.handler"
+  handler       = "index.dispatchEvent"
 
   source_code_hash = filebase64sha256("${var.project_name}.zip")
   runtime          = "nodejs14.x"
