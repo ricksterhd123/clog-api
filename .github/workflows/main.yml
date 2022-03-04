@@ -1,5 +1,9 @@
 name: Main workflow
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - '**/README.md'
+
 jobs:
   Lint:
     runs-on: ubuntu-latest
