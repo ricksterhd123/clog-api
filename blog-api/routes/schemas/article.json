@@ -1,0 +1,21 @@
+{
+    "type": "object",
+    "properties": {
+        "author": { "type": "string" },
+        "timeCreated": { "type": "string" },
+        "timeUpdated": { "type": "string" },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "tags": { 
+            "type": "array",
+            "items": { "type": "string" }
+        }
+    },
+    "required": [
+        "author",
+        "timeCreated",
+        "timeUpdated",
+        "title",
+        "body"
+    ]
+}
