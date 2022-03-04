@@ -1,30 +1,30 @@
+const { getResponse } = require('../utils');
 const { Article } = require('../models');
 
 async function create(event) {
-    const { body: bodyRaw } = event;
+    let { body: eventBody } = event;
+
+    try {
+        eventBody = JSON.parse(eventBody);
+    } catch (error) {
+        return getResponse(400, { error: 'Invalid JSON' });
+    }
+
     const {
         author,
         title,
         body,
         tags,
-    } = JSON.parse(bodyRaw);
+    } = eventBody;
 
     const result = await Article.create(author, title, body, tags);
     console.log(result);
 
     if (result) {
-        return {
-            statusCode: 204,
-        };
+        return getResponse(204, body);
     }
 
-    return {
-        statusCode: 500,
-        headers: {
-            'content-type': 'application/json',
-        },
-        body: JSON.stringify({ error: 'Could not create article' }),
-    };
+    return getResponse(400, '');
 }
 
 // async function read(event) {
