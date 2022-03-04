@@ -1,3 +1,4 @@
+const { v5 } = require('uuid');
 const dynamoDb = require('./dynamoDb');
 
 const typeName = 'ARTICLE';
@@ -16,7 +17,7 @@ async function create(author, title, body, tags) {
         tags,
     };
 
-    Item[id] = title;
+    Item[id] = v5(title, author);
     Item[type] = typeName;
 
     return dynamoDb.put(Item);
