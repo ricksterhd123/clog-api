@@ -1,9 +1,9 @@
 const { getPathRoot, getAuthorization, getResponse } = require('./apigateway');
-const { isJwtValid } = require('./jwt');
+const { verifyJwt } = require('./jwt');
 
 module.exports = {
     getResponse,
     getPathRoot,
     getAuthorization,
-    isJwtValid,
+    verifyJwt,
 };

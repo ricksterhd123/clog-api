@@ -1,9 +1,30 @@
-const { getResponse } = require('../utils');
+const { getResponse, getAuthorization, verifyJwt } = require('../utils');
 const { Article } = require('../models');
 const { validateArticle } = require('./schemas');
 
 async function create(event) {
-    let { body, headers } = event;
+    let {
+        body,
+        headers: {
+            authorization,
+        },
+    } = event;
+
+    authorization = getAuthorization(authorization);
+    if (!authorization) {
+        return getResponse(401, { error: 'Invalid authorization' });
+    }
+
+    if (authorization.type !== 'Bearer') {
+        return getResponse(401, { error: 'Invalid authorization type' });
+    }
+
+    const jwt = await verifyJwt(authorization.key);
+    if (!jwt) {
+        return getResponse(401, { error: 'Invalid authorization' });
+    }
+
+    console.log(jwt);
 
     try {
         body = JSON.parse(body);

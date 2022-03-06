@@ -1,6 +1,6 @@
 const { CognitoJwtVerifier } = require('aws-jwt-verify');
 
-async function isJwtValid(jwt) {
+async function verifyJwt(jwt) {
     const verifier = CognitoJwtVerifier.create({
         userPoolId: process.env.USER_POOL_ID,
         tokenUse: 'access',
@@ -15,5 +15,5 @@ async function isJwtValid(jwt) {
 }
 
 module.exports = {
-    isJwtValid,
+    verifyJwt,
 };
