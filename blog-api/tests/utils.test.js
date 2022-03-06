@@ -40,22 +40,28 @@ test('Fails when rawPath invalid', () => {
 });
 
 test('Get correct response format', () => {
-    expect(getResponse(200, 'hello world')).toBe({
-        statusCode: 200,
-        header: {
-            'content-type': 'application/json',
-        },
-        body: JSON.stringify('hello world'),
-    });
+    expect(getResponse(200, 'hello world')).toEqual(
+        expect.objectContaining({
+            statusCode: 200,
+            headers: {
+                'content-type': 'application/json',
+            },
+            body: JSON.stringify('hello world'),
+        }),
+    );
 });
 
 test('Get authorization header object', () => {
     const tests = [
-        { authHeader: 'Basic dfajfldkjalfdjsal', expected: { type: 'Basic', key: '' } },
+        { authHeader: 'Basic dfajfldkjalfdjsal', expected: { type: 'Basic', key: 'dfajfldkjalfdjsal' } },
+        { authHeader: 'Bearer dfajfldkjalfdjsal', expected: { type: 'Bearer', key: 'dfajfldkjalfdjsal' } },
+        { authHeader: 'Bearerdfajfldkjalfdjsal', expected: false },
+        { authHeader: '', expected: false },
     ];
 
     for (let i = 0; i < tests.length; i += 1) {
         const { authHeader, expected } = tests[i];
-        expect(getAuthorization(authHeader)).toBe(expected);
+        expect(getAuthorization(authHeader)).toEqual(expected
+            && expect.objectContaining(expected));
     }
 });
