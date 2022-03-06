@@ -8,7 +8,7 @@ async function verifyJwt(jwt) {
     });
 
     try {
-        return verifier.verify(jwt);
+        return await verifier.verify(jwt);
     } catch {
         return false;
     }
