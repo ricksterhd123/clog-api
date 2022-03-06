@@ -13,5 +13,5 @@
 - GET /articles => Get all blog articles
 - GET /articles/${article_id} => Get the article with id ${article_id}
 - POST /articles => Create a blog article
-- PATCH /articles/${article_id} => Update a blog article
-- DELETE /articles/${article_id} => Delete a blog article
+- PATCH /articles/${article_id} => Update a blog article with id ${article_id}
+- DELETE /articles/${article_id} => Delete a blog article with id ${article_id}
