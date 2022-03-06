@@ -20,6 +20,26 @@ function getPathRoot(stage, routeKey) {
     return routeKey.substring(stagePartIndex + stagePart.length);
 }
 
+/**
+ * Extract the type and key from the authorization header
+ * @param {string} authHeader Authorization header from apigateway event
+ * @returns {{ type: string, key: string }} Deconstructed auth header
+ */
+function getAuthorization(authHeader) {
+    if (!authHeader) {
+        return false;
+    }
+
+    const [type, key] = authHeader.split(' ');
+
+    if (!(type && key)) {
+        return false;
+    }
+
+    return { type, key };
+}
+
 module.exports = {
     getPathRoot,
+    getAuthorization,
 };
