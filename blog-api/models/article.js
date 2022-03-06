@@ -40,7 +40,7 @@ async function create(author, title, body, tags) {
         throw new Error(`Failed to submit article ${itemString} into dynamoDB`);
     }
 
-    return id;
+    return Item[id];
 }
 
 module.exports = {
