@@ -1,5 +1,5 @@
 const Articles = require('./routes/articles');
-const { getResponse } = require('./utils');
+const { getResponse, getPathRoot } = require('./utils');
 
 /**
  * Map endpoint and method with event handler
@@ -12,23 +12,6 @@ const Paths = {
         DELETE: Articles.destroy,
     },
 };
-
-/**
- * Get the root from the path
- * e.g. /dev/articles => articles
- * @param {string} stage stage from API gateway request event
- * @param {string} routeKey routeKey from API gateway request event
- * @returns {string} Path root
- */
-function getPathRoot(stage, routeKey) {
-    if (!(stage && routeKey)) {
-        return false;
-    }
-
-    const pathRegex = new RegExp(`\\/${stage}\\/((\\w*-*)+)`);
-    const [, route] = routeKey.match(pathRegex);
-    return route;
-}
 
 /**
  * API gateway event dispatcher
