@@ -158,6 +158,8 @@ resource "aws_lambda_function" "blog_api" {
 
   environment {
     variables = {
+      USER_POOL_ID = aws_cognito_user_pool.pool.id
+      USER_POOL_APP_CLIENT_ID = aws_cognito_user_pool_client.client.id
       BLOG_API_DYNAMODB_TABLE_NAME    = var.dynamodb_table_name
       BLOG_API_DYNAMODB_HASH_KEY_NAME = var.dynamodb_hash_key_name
       BLOG_API_DYNAMODB_SORT_KEY_NAME = var.dynamodb_sort_key_name
