@@ -1,4 +1,4 @@
-const Articles = require('./routes/articles');
+const { Articles } = require('./routes');
 const { getResponse, getPathRoot } = require('./utils');
 
 /**
@@ -7,9 +7,9 @@ const { getResponse, getPathRoot } = require('./utils');
 const Paths = {
     articles: {
         POST: Articles.create,
-        GET: Articles.read,
-        PATCH: Articles.update,
-        DELETE: Articles.destroy,
+        // GET: Articles.read,
+        // PATCH: Articles.update,
+        // DELETE: Articles.destroy,
     },
 };
 
