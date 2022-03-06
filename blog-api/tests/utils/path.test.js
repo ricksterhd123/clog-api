@@ -1,4 +1,4 @@
-const { getPathRoot } = require('../utils/path');
+const { getPathRoot } = require('../../utils/path');
 
 test('Fails when no stage or rawPath is provided', () => {
     const tests = [
