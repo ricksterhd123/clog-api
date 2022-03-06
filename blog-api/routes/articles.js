@@ -3,30 +3,30 @@ const { Article } = require('../models');
 const { validateArticle } = require('./schemas');
 
 async function create(event) {
-    let { body: eventBody } = event;
+    let { body, headers } = event;
 
     try {
-        eventBody = JSON.parse(eventBody);
+        body = JSON.parse(body);
     } catch (error) {
         return getResponse(400, { error: 'Invalid JSON' });
     }
 
-    if (!validateArticle(eventBody)) {
+    if (!validateArticle(body)) {
         return getResponse(400, { error: validateArticle.errors });
     }
 
     const {
         author,
         title,
-        body,
+        body: articleBody,
         tags,
-    } = eventBody;
+    } = body;
 
-    const result = await Article.create(author, title, body, tags);
-    console.log(result);
+    const articleId = await Article.create(author, title, articleBody, tags);
+    console.log(articleId);
 
-    if (result) {
-        return getResponse(204);
+    if (articleId) {
+        return getResponse(200, { articleId });
     }
 
     return getResponse(400, 'Missing fields in JSON');
