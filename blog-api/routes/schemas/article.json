@@ -1,7 +1,6 @@
 {
     "type": "object",
     "properties": {
-        "author": { "type": "string" },
         "title": { "type": "string" },
         "body": { "type": "string" },
         "tags": { 
@@ -10,7 +9,6 @@
         }
     },
     "required": [
-        "author",
         "title",
         "body"
     ]

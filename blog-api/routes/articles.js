@@ -23,11 +23,14 @@ async function create(event) {
     }
 
     const jwt = await verifyJwt(authorization.key);
+
     if (!jwt) {
         return getResponse(401, { error: 'Invalid authorization' });
     }
 
-    console.log(jwt);
+    if (!jwt.username) {
+        throw new Error('Could not find username in JWT token');
+    }
 
     try {
         body = JSON.parse(body);
@@ -40,13 +43,12 @@ async function create(event) {
     }
 
     const {
-        author,
         title,
         body: articleBody,
         tags,
     } = body;
 
-    const articleId = await Article.create(author, title, articleBody, tags);
+    const articleId = await Article.create(jwt.username, title, articleBody, tags);
     console.log(articleId);
 
     if (articleId) {
