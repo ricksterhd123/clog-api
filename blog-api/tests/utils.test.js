@@ -1,4 +1,4 @@
-const { getPathRoot } = require('../../utils/path');
+const { getPathRoot, getAuthorization, getResponse } = require('../utils');
 
 test('Fails when no stage or rawPath is provided', () => {
     const tests = [
@@ -36,5 +36,26 @@ test('Fails when rawPath invalid', () => {
     for (let i = 0; i < tests.length; i += 1) {
         const { stage, rawPath, expected } = tests[i];
         expect(getPathRoot(stage, rawPath)).toBe(expected);
+    }
+});
+
+test('Get correct response format', () => {
+    expect(getResponse(200, 'hello world')).toBe({
+        statusCode: 200,
+        header: {
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify('hello world'),
+    });
+});
+
+test('Get authorization header object', () => {
+    const tests = [
+        { authHeader: 'Basic dfajfldkjalfdjsal', expected: { type: 'Basic', key: '' } },
+    ];
+
+    for (let i = 0; i < tests.length; i += 1) {
+        const { authHeader, expected } = tests[i];
+        expect(getAuthorization(authHeader)).toBe(expected);
     }
 });
