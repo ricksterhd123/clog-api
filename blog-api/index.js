@@ -1,5 +1,5 @@
 const { Articles } = require('./routes');
-const { getResponse, getPathRoot } = require('./utils');
+const { getResponse, getPathRoot, isJwtValid } = require('./utils');
 
 /**
  * Map endpoint and method with event handler
@@ -34,8 +34,12 @@ async function dispatchEvent(event) {
                 },
                 stage,
             },
+            headers: {
+                authorization,
+            },
         } = event;
 
+        if (authorization && isJwtValid());
         const route = getPathRoot(stage, rawPath);
         const handlerFn = route && Paths[route][method.toUpperCase()];
 
