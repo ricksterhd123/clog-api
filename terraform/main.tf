@@ -25,6 +25,16 @@ provider "aws" {
 
 resource "aws_cognito_user_pool" "pool" {
   name = var.project_name
+
+  auto_verified_attributes = ["email"]
+  username_attributes = ["email"]
+
+  account_recovery_setting {
+    recovery_mechanism {
+      name = "verified_email"
+      priority = 1
+    }
+  }
 }
 
 # Creates a URL that users can authorize and get tokens
@@ -48,7 +58,6 @@ resource "aws_cognito_user_pool_client" "client" {
     "ALLOW_USER_PASSWORD_AUTH",
     "ALLOW_REFRESH_TOKEN_AUTH"
   ]
-  generate_secret = true
   callback_urls = [
     "https://localhost:8080"
   ]
