@@ -11,6 +11,9 @@ async function create(event) {
     } = event;
 
     authorization = getAuthorization(authorization);
+
+    console.log(authorization);
+
     if (!authorization) {
         return getResponse(401, { error: 'Invalid authorization' });
     }
