@@ -182,18 +182,6 @@ resource "aws_apigatewayv2_api" "gateway" {
   protocol_type = "HTTP"
 }
 
-resource "aws_apigatewayv2_authorizer" "auth" {
-  api_id           = aws_apigatewayv2_api.gateway.id
-  authorizer_type  = "JWT"
-  identity_sources = ["$request.header.Authorization"]
-  name             = "cognito-authorizer"
-
-  jwt_configuration {
-    audience = [aws_cognito_user_pool_client.client.id]
-    issuer   = "https://${aws_cognito_user_pool.pool.endpoint}"
-  }
-}
-
 # Link the API with a lambda function
 resource "aws_apigatewayv2_integration" "int" {
   api_id                 = aws_apigatewayv2_api.gateway.id
@@ -208,8 +196,7 @@ resource "aws_apigatewayv2_route" "route" {
   api_id             = aws_apigatewayv2_api.gateway.id
   route_key          = "$default"
   target             = "integrations/${aws_apigatewayv2_integration.int.id}"
-  authorization_type = "JWT"
-  authorizer_id      = aws_apigatewayv2_authorizer.auth.id
+  authorization_type = "NONE"
 }
 
 resource "aws_apigatewayv2_stage" "stage" {
